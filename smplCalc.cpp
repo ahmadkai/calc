@@ -28,30 +28,30 @@ using namespace std;
 
 class Simple_Calculor
 {
-    map<string, float> variables;
+    map<string, double> variables;
 
     //  Functions for Mathematics Calculation
-    bool math_Func(string math, float &result);
-    void math_Op(string &math, string symbol, const function<float(float, float)> &f);
-    void math_Func(string &math, string symbol, const function<float(float)> &f);
+    bool math_Func(string math, double &result);
+    void math_Op(string &math, string symbol, const function<double(double, double)> &f);
+    void math_Func(string &math, string symbol, const function<double(double)> &f);
 
-    static float addition_Func(float val1, float val2);       // function for Addition
-    static float subtract_Func(float val1, float val2);       // function for Subtraction
-    static float multiplication_Func(float val1, float val2); // function for Multiplication 
-    static float division_Func(float val1, float val2);       // function for Division 
-    static float exponent_Func(float val1, float val2);       // function for Exponential 
+    static double addition_Func(double val1, double val2);       // function for Addition
+    static double subtract_Func(double val1, double val2);       // function for Subtraction
+    static double multiplication_Func(double val1, double val2); // function for Multiplication 
+    static double division_Func(double val1, double val2);       // function for Division 
+    static double exponent_Func(double val1, double val2);       // function for Exponential 
 
     // Cosine & aCosine in degree functions
-    static float cos_Func(float f);
-    static float cosRadSolv(float f);
-    static float acosDegSolv(float f);
-    static float acosRadSolv(float f);
+    static double cos_Func(double f);
+    static double cosRadSolv(double f);
+    static double acosDegSolv(double f);
+    static double acosRadSolv(double f);
 
     // Sine & aSine in degree Functions
-    static float sinDegSolv(float f);
-    static float sinRadSolv(float f);
-    static float asinDegSolv(float f);
-    static float asinRadSolv(float f);
+    static double sinDegSolv(double f);
+    static double sinRadSolv(double f);
+    static double asinDegSolv(double f);
+    static double asinRadSolv(double f);
 
     // Number and String Conversion Functions
     int hex_Dec(string hex_Value);
@@ -63,7 +63,7 @@ class Simple_Calculor
     void remove_Spaces(string &s);
     bool check_StrIsNum(string s);
     bool variable_Def(string Line_Code);
-    float getVarMath(string my_Var);
+    double getVarMath(string my_Var);
 
     void string_Filter(char *str);
     bool check_Substring(string s2, string s1);
@@ -142,7 +142,7 @@ bool Simple_Calculor::file_Excution(string file_name)
 
 
     // Variables definition
-    float result;
+    double result;
     string Read_line;
 
     variables["pi"] = PI;
@@ -219,7 +219,7 @@ bool Simple_Calculor::variable_Def(string Line_Code)
         // Remove the spaces left in the variable.
         remove_Spaces(my_Var);
 
-        float result;
+        double result;
 
         math_Func(math, result);
 
@@ -236,7 +236,7 @@ bool Simple_Calculor::variable_Def(string Line_Code)
 
 // Mathmatics Functions
 
-bool Simple_Calculor::math_Func(string math, float &result)
+bool Simple_Calculor::math_Func(string math, double &result)
 {
     // Loops over all of the string
     for (long unsigned int i = 0; i < math.size(); i++)
@@ -276,7 +276,8 @@ bool Simple_Calculor::math_Func(string math, float &result)
             // If the end of the string is reached and the mathching parentheses was not found then throw and error
             if (index >= math.size() && pCount != 0)
             {
-                throw string("ERROR: Parentheses mismatch.");
+                cout << "ERROR: Parentheses mismatch." << endl;
+                // throw string("ERROR: Parentheses mismatch.");
             }
             else
             {
@@ -358,7 +359,7 @@ Runs the given math operation function on the math string. As input it takes a r
 the math string, the symbol for the operator, and a funciton pointer to the functions that will
 be used to actually solve the operator. This function returns nothing.
 */
-void Simple_Calculor::math_Op(string &math, string symbol, const function<float(float, float)> &f)
+void Simple_Calculor::math_Op(string &math, string symbol, const function<double(double, double)> &f)
 {
     // Make a regex to find all the instances of the operator
     smatch sm;
@@ -377,7 +378,7 @@ void Simple_Calculor::math_Op(string &math, string symbol, const function<float(
         string left = sub.substr(0, splitIndex);
         string right = sub.substr(splitIndex + 1);
 
-        float val2, val1;
+        double val2, val1;
         int binValue, decnumber;
 
         // Check if the right side is a variable and if it is access its value from one of the maps.
@@ -445,7 +446,7 @@ void Simple_Calculor::math_Op(string &math, string symbol, const function<float(
         }
 
         // Solve the math for the operator using the given function
-        float result = f(val1, val2);
+        double result = f(val1, val2);
 
         // Replace the operator and the values to its left and right with the answer
         int startPos = sm.position(0);
@@ -456,75 +457,79 @@ void Simple_Calculor::math_Op(string &math, string symbol, const function<float(
 }
 
 // Functions for solve the math operations
-float Simple_Calculor::exponent_Func(float val1, float val2)
+double Simple_Calculor::exponent_Func(double val1, double val2)
 {
     return pow(val1, val2);
 }
 
-float Simple_Calculor::multiplication_Func(float val1, float val2)
+double Simple_Calculor::multiplication_Func(double val1, double val2)
 {
     return val1 * val2;
 }
 
-float Simple_Calculor::division_Func(float val1, float val2)
+double Simple_Calculor::division_Func(double val1, double val2)
 {
+    if (val2 == 0) {
+        std::cout << "Error: Division by zero. Returning NaN." << std::endl;
+        return std::numeric_limits<double>::quiet_NaN();
+    }
     return val1 / val2;
 }
 
-float Simple_Calculor::addition_Func(float val1, float val2)
+double Simple_Calculor::addition_Func(double val1, double val2)
 {
     return val1 + val2;
 }
 
-float Simple_Calculor::subtract_Func(float val1, float val2)
+double Simple_Calculor::subtract_Func(double val1, double val2)
 {
     return val1 - val2;
 }
 
 // Functions for solving sine
-float Simple_Calculor::sinDegSolv(float f)
+double Simple_Calculor::sinDegSolv(double f)
 {
     return sin((f * PI) / 180.0);
 }
 
-float Simple_Calculor::sinRadSolv(float f)
+double Simple_Calculor::sinRadSolv(double f)
 {
     return sin(f);
 }
 
-float Simple_Calculor::asinDegSolv(float f)
+double Simple_Calculor::asinDegSolv(double f)
 {
     return (asin(f) * 180.0) / PI;
 }
 
-float Simple_Calculor::asinRadSolv(float f)
+double Simple_Calculor::asinRadSolv(double f)
 {
     return asin(f);
 }
 
 // Functions for solving cosine
-float Simple_Calculor::cos_Func(float f)
+double Simple_Calculor::cos_Func(double f)
 {
     return cos((f * PI) / 180.0);
 }
 
-float Simple_Calculor::cosRadSolv(float f)
+double Simple_Calculor::cosRadSolv(double f)
 {
     return cos(f);
 }
 
-float Simple_Calculor::acosDegSolv(float f)
+double Simple_Calculor::acosDegSolv(double f)
 {
     return (acos(f) * 180.0) / PI;
 }
 
-float Simple_Calculor::acosRadSolv(float f)
+double Simple_Calculor::acosRadSolv(double f)
 {
     return acos(f);
 }
 
 // Runs the given math operation function on the math string.
-void Simple_Calculor::math_Func(string &math, string symbol, const function<float(float)> &f)
+void Simple_Calculor::math_Func(string &math, string symbol, const function<double(double)> &f)
 {
     // Create the regex that will actually find the given functio "symbol" such as sin
     smatch sm;
@@ -535,20 +540,20 @@ void Simple_Calculor::math_Func(string &math, string symbol, const function<floa
     {
         string value = sm[0].str().substr(symbol.size());
         remove_Spaces(value);
-        float floatValue;
+        double doubleValue;
 
         // Check if the right side is a variable and if it is access its value from one of the maps.
         if (check_StrIsNum(value))
         {
-            floatValue = stof(value);
+            doubleValue = stof(value);
         }
         else if (variables.find(value) != variables.end())
         {
-            floatValue = getVarMath(value);
+            doubleValue = getVarMath(value);
         }
 
         // Solve for the value using the given function pointer
-        float result = f(floatValue);
+        double result = f(doubleValue);
 
         // Check and make sure the value return was not a nan.
         if (isnan(result))
@@ -566,8 +571,8 @@ void Simple_Calculor::math_Func(string &math, string symbol, const function<floa
 
 // Supporting Functions
 
-// Retreive a variable value as a float for use in the math solver
-float Simple_Calculor::getVarMath(string my_Var)
+// Retreive a variable value as a double for use in the math solver
+double Simple_Calculor::getVarMath(string my_Var)
 {
    
     if (variables.find(my_Var) != variables.end())
@@ -576,7 +581,9 @@ float Simple_Calculor::getVarMath(string my_Var)
     }
     else
     {
-        throw string("ERROR: Invalid Input or Function/Variable not found."+my_Var);
+        // throw string("ERROR: Invalid Input or Function/Variable not found."+my_Var);
+        // cout << "ERROR: Invalid Input or Function/Variable not found." << endl;
+        return std::numeric_limits<double>::quiet_NaN();
     }
 }
 
